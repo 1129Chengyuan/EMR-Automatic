@@ -1,5 +1,6 @@
-import { SetStateAction, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import type { SetStateAction } from 'react'
+import { useEffect, useState } from 'react'
+// import { useRouter } from 'next/navigation'
 import { Button } from "./components/ui/button"
 import { Input } from "./components/ui/input"
 import { Progress } from "./components/ui/progress"
@@ -13,7 +14,12 @@ const templates = [
 ]
 
 export default function PDFUploadWithTemplates() {
-  const router = useRouter()
+  // const router = useRouter()
+
+  // useEffect(() => {
+  //   if (!router) return;
+  // }, [router]);
+
   const [file, setFile] = useState<File | null>(null)
   const [converting, setConverting] = useState(false)
   const [conversionProgress, setConversionProgress] = useState(0)
@@ -56,7 +62,7 @@ export default function PDFUploadWithTemplates() {
   }
 
   const handleTemplateSelect = (templateId: string) => {
-    router.push(`/patient-details?template=${templateId}`)
+    window.location.href = `/patient-details?template=${templateId}`
   }
 
   const handleSearchChange = (event: { target: { value: SetStateAction<string> } }) => {
@@ -87,7 +93,7 @@ export default function PDFUploadWithTemplates() {
           {filteredFiles.map((fileName) => (
             <Button
               key={fileName}
-              variant="ghost"
+              // variant="ghost"
               className={`w-full justify-start mb-2 ${selectedPreviousFile === fileName ? 'bg-primary/10' : ''}`}
               onClick={() => handlePreviousFileSelect(fileName)}
             >
