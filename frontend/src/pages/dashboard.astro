@@ -1,84 +1,54 @@
-<!DOCTYPE html>
+---
+import PDFUploadWithTemplates from '../srcForDashboard/pdf-upload.tsx'
+import { Users, Calendar, Clipboard, FileText, Shield } from 'lucide-react'
+---
+
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard</title>
-</head>
-<body>
-  <div class="dashboard-container">
-    <header class="dashboard-header">
-      <h1>Dashboard</h1>
-    </header>
-    <aside class="dashboard-sidebar">
-      <nav>
-        <ul>
-          <li><a href="/dashboard">Home</a></li>
-          <li><a href="/dashboard/profile">Profile</a></li>
-          <li><a href="/dashboard/settings">Settings</a></li>
-          <li><a href="/logout">Logout</a></li>
-        </ul>
+  <head>
+    <title>Dashboard</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="/src/styles/global.css" rel="stylesheet" />
+  </head>
+  <body class="bg-white font-sans">
+      <!-- Navigation Bar -->
+      <nav class="bg-gray-800 text-white p-4">
+        <div class="mx-auto flex justify-between items-center">
+          <div class="text-lg font-bold">My Dashboard</div>
+          <div class="space-x-4">
+            <a href="/account" class="hover:underline">Account Info</a>
+            <a href="/settings" class="hover:underline">Settings</a>
+            <a href="/login" class="hover:underline">Logout</a>
+          </div>
+        </div>
       </nav>
-    </aside>
-    <main class="dashboard-main">
-      <h2>Welcome to the Dashboard</h2>
-      <p>This is your main content area. Customize it as needed.</p>
-    </main>
-  </div>
-</body>
+      <!-- Main Content with Sidebar -->
+      <div class="flex">
+        <!-- Sidebar -->
+        <aside class="w-78 bg-gray-600 p-2">
+          <nav class="space-y-6">
+            <a href="/patients" class="block text-gray-200 hover:bg-gray-700 p-2 rounded flex justify-start">
+              <Users class="mr-4 h-5 w-5" />&nbsp;&nbsp;&nbsp;Patients
+            </a>
+            <a href="/appointments" class="block text-gray-200 hover:bg-gray-700 p-2 rounded flex justify-start">
+              <Calendar class="mr-4 h-5 w-5" />&nbsp;&nbsp;&nbsp; Appointments
+            </a>
+            <a href="/prescription-plans" class="block text-gray-200 hover:bg-gray-700 p-2 rounded flex justify-start">
+              <Clipboard class="mr-4 h-5 w-5" /> &nbsp;&nbsp;&nbsp;Patient Prescription Plans
+            </a>
+            <a href="/health-records" class="block text-gray-200 hover:bg-gray-700 p-2 rounded flex justify-start">
+              <FileText class="mr-4 h-5 w-5" />&nbsp;&nbsp;&nbsp; Patient Health Records
+            </a>
+            <a href="/insurance-plans" class="block text-gray-200 hover:bg-gray-700 p-2 rounded flex justify-start">
+              <Shield class="mr-4 h-5 w-5" /> &nbsp;&nbsp;&nbsp;Patient Insurance Plans
+            </a>
+          </nav>
+        </aside>
+  
+        <!-- Main Content Area -->
+        <main class="flex-1 p-6">
+          <PDFUploadWithTemplates client:load/>
+        </main>
+      </div>
+  </body>
 </html>
-
-<style>
-  .dashboard-container {
-    display: flex;
-    min-height: 100vh;
-    flex-direction: column;
-  }
-
-  .dashboard-header {
-    background-color: #333;
-    color: #fff;
-    padding: 1rem;
-    text-align: center;
-  }
-
-  .dashboard-sidebar {
-    background-color: #f4f4f4;
-    padding: 1rem;
-    width: 200px;
-  }
-
-  .dashboard-sidebar nav ul {
-    list-style: none;
-    padding: 0;
-  }
-
-  .dashboard-sidebar nav ul li {
-    margin: 1rem 0;
-  }
-
-  .dashboard-sidebar nav ul li a {
-    text-decoration: none;
-    color: #333;
-  }
-
-  .dashboard-main {
-    flex: 1;
-    padding: 1rem;
-  }
-
-  @media (min-width: 768px) {
-    .dashboard-container {
-      flex-direction: row;
-    }
-
-    .dashboard-sidebar {
-      height: 100vh;
-      position: fixed;
-    }
-
-    .dashboard-main {
-      margin-left: 200px;
-    }
-  }
-</style>
