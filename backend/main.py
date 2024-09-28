@@ -100,7 +100,16 @@ def getpdfs():
 
 @app.route("/getpdf", methods=['GET'])
 def getpdf():
-    return "PDF Data"
+    name = request.args.get('name')
+    pdfName = request.args.get('pdfName')
+    patient = collectionP.find_one({'name': name})
+    if patient is not None:
+        for pdf in patient['pdfs']:
+            if pdf['filename'] == pdfName:
+                return pdf['data']
+        return "PDF not found"
+    else:
+        return "Patient not found"
 
 if __name__ == "__main__":
     app.run()
