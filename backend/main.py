@@ -20,7 +20,6 @@ collection = db['UserCredentials']
 def suggest_me():
     return "Hello World!"
 
-
 @app.route("/login", methods=['POST'])
 def login():
     data = request.get_json()
