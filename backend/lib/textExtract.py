@@ -4,7 +4,6 @@ from pypdf import PdfReader
 
 load_dotenv()
 
-OCR_API_KEY = os.getenv('OCR_API_KEY')
 rel_path = "../input.pdf"
 script_dir = os.path.dirname(__file__)
 PDF_PATH = os.path.join(script_dir, rel_path)
