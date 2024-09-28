@@ -50,13 +50,14 @@ export default function PDFUploadWithTemplates() {
   }
 
   const handleUpload = async () => {
-    if (!file && !selectedPreviousFile) return
+    if (!file && !selectedPreviousFile && !currentPatient) return
   
     setConverting(true)
     setConversionProgress(0)
   
     try {
       const formData = new FormData();
+      formData.append('name', currentPatient);
       if (file) {
         formData.append('file', file);
       } else {
@@ -187,7 +188,7 @@ export default function PDFUploadWithTemplates() {
               onChange={handleFileChange}
               className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100"
             />
-            <Button onClick={handleUpload} disabled={(!file && !selectedPreviousFile) || converting}>
+            <Button onClick={handleUpload} disabled={(!file && !selectedPreviousFile && !currentPatient) || converting}>
               {converting ? "Converting..." : `Upload and Convert ${selectedPreviousFile || ''}`}
               {!converting && <Upload className="ml-2 h-4 w-4" />}
             </Button>

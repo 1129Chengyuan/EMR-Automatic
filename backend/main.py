@@ -61,7 +61,9 @@ def uploadpdf():
         return jsonify({"message": "No selected file"}), 400
 
     """CHANGE THIS NAME THING TO CALL HIS FUNCTION FOR THE NAME"""
-    name = "John Doe"
+    name = request.form.get('name').lower()
+    if (not name):
+        return jsonify({"message": "No name provided"}), 400
 
     name = name.lower()
     # Create a patient if they don't exist
