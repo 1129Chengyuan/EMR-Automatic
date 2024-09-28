@@ -12,6 +12,8 @@
   "dependencies": {
     "@astrojs/react": "^3.6.2",
     "@astrojs/tailwind": "^5.1.1",
+    "@types/react": "^18.3.10",
+    "@types/react-dom": "^18.3.0",
     "astro": "^4.15.9",
     "next": "^14.2.13",
     "react": "^18.3.1",

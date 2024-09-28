@@ -9,33 +9,31 @@ const LoginForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // setIsLoading(true);
-    // setMessage('BooYah');
-    console.log("BOOOOOO");
-    // setIsLoading(false);
+    setIsLoading(true);
 
-    // try {
-    //   const response = await fetch('http://127.0.0.1:5000/login', {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify({ username, npi, password }),
-    //   });
+    try {
+      const response = await fetch('http://localhost:5000/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, npi, password }),
+      });
 
-    //   const data = await response.json();
-    //   setMessage(data.message);
+      const data = await response.json();
+      setMessage(data.message);
 
-    //   if (response.ok) {
-        
-    //   }
-    // } catch (error) {
-    //   setMessage('An error occurred. Please try again.');
-    // } finally {
-    //   setIsLoading(false);
-    // }
+      if (response.ok) {
+        if (data.message.includes('successful')) {
+          window.location.href = '/dashboard';
+        }
+      }
+    } catch (error) {
+      setMessage('An error occurred. Please try again: ' + error.message);
+    } finally {
+      setIsLoading(false);
+    }
   };
-  console.log("TERMINAL");
   return (
     <form className="w-full max-w-sm" onSubmit={handleSubmit}>
       <div className="mb-6">
@@ -75,6 +73,9 @@ const LoginForm = () => {
       >
         {isLoading ? 'Logging in...' : 'Login'}
       </button>
+      <p className="mt-4 text-center">
+        Don't have an account? <a href="/register" className="text-blue-500">Register here</a>
+      </p>
       {message && <p className="mt-4 text-center text-red-500">{message}</p>}
     </form>
   );
