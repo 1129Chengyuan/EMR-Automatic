@@ -6,6 +6,7 @@ import { Input } from "./components/ui/input"
 import { Progress } from "./components/ui/progress"
 import { ScrollArea } from "./components/ui/scroll-area"
 import { Upload, FileText, Check, File, Search } from "lucide-react"
+import { User } from "lucide-react"
 
 const templates = [
   { id: 'chest-pain', name: 'Chest Pain' },
@@ -26,11 +27,14 @@ export default function PDFUploadWithTemplates() {
   const [converted, setConverted] = useState(false)
   const [selectedPreviousFile, setSelectedPreviousFile] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState("")
+  const [currentPatient, setCurrentPatient] = useState<string | null>(null)
+  const [pdfNamesForPatient, setPdfNamesForPatient] = useState<string[]>([])
 
-  const previousFiles = ["Patient1.pdf", "Patient2.pdf", "Patient3.pdf"]
+  const patientNames = ["john doe", "bob junior", "mira amir", "hunlee li", "sanvi jain", "james bond"].sort()
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files
+    setFile(files[0])
     if (files && files[0] && files[0].type === "application/pdf") {
       setFile(files[0])
       setSelectedPreviousFile(null)
@@ -47,30 +51,69 @@ export default function PDFUploadWithTemplates() {
 
   const handleUpload = async () => {
     if (!file && !selectedPreviousFile) return
-
+  
     setConverting(true)
     setConversionProgress(0)
-
-    // Simulating file upload and conversion process
-    for (let i = 0; i <= 100; i += 10) {
-      setConversionProgress(i)
-      await new Promise(resolve => setTimeout(resolve, 500))
+  
+    try {
+      const formData = new FormData();
+      if (file) {
+        formData.append('file', file);
+      } else {
+        formData.append('file', selectedPreviousFile);
+      }
+  
+      const response = await fetch('http://localhost:5000/uploadpdf', {
+        method: 'POST',
+        body: formData,
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        if (data.message.includes('successful')) {
+          window.location.href = '/dashboard';
+        }
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    } finally {
+      setConverting(false)
+      setConverted(true)
     }
-
-    setConverting(false)
-    setConverted(true)
   }
-
   const handleTemplateSelect = (templateId: string) => {
     window.location.href = `/patient-details?template=${templateId}`
+  }
+
+  const handlePatientChange = async (patientName: string) => {
+    setCurrentPatient(patientName)
+
+    // fetch files for the patient
+    try {
+      const response = await fetch(`http://localhost:5000/getpdfs?name=${patientName}`);
+      const data = await response.json();
+      setPdfNamesForPatient([]);
+      if (response.ok) {
+        setPdfNamesForPatient(data.pdfs);
+      } else {
+        console.error('Failed to fetch PDFs:', data.message);
+      }
+    } catch (error) {
+      console.error('Error fetching PDFs:', error);
+    }
   }
 
   const handleSearchChange = (event: { target: { value: SetStateAction<string> } }) => {
     setSearchQuery(event.target.value)
   }
 
-  const filteredFiles = previousFiles.filter(file => 
-    file.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredNames = patientNames.filter(patientN => 
+    patientN.toLowerCase().includes(searchQuery.toLowerCase())
+  )
+
+  const filteredFileNames = pdfNamesForPatient.filter(pdfName =>
+    pdfName.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
   return (
@@ -88,9 +131,38 @@ export default function PDFUploadWithTemplates() {
             />
           </div>
         </div>
-        <h2 className="text-xl font-semibold mb-4">Previous Files</h2>
+        <h2 className="text-xl font-semibold mb-4">Patients</h2>
         <ScrollArea className="flex-grow">
-          {filteredFiles.map((fileName) => (
+          {filteredNames.map((patientName) => (
+            <Button
+              key={patientName}
+              // variant="ghost"
+              className={`w-full justify-start mb-2 ${selectedPreviousFile === patientName ? 'bg-primary/10' : ''}`}
+              onClick={() => handlePatientChange(patientName)}
+            >
+              <User className="mr-2 h-4 w-4" />
+              {patientName}
+            </Button>
+          ))}
+        </ScrollArea>
+      </div>
+
+      {currentPatient && (<div className="w-64 bg-white p-6 shadow-md flex flex-col">
+        <div className="mb-4">
+          <div className="relative">
+            <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            <Input
+              type="text"
+              placeholder="Search patient's documents..."
+              value={searchQuery}
+              onChange={handleSearchChange}
+              className="pl-8"
+            />
+          </div>
+        </div>
+        <h2 className="text-xl font-semibold mb-4">{currentPatient}</h2>
+        <ScrollArea className="flex-grow">
+          {filteredFileNames.map((fileName) => (
             <Button
               key={fileName}
               // variant="ghost"
@@ -102,7 +174,7 @@ export default function PDFUploadWithTemplates() {
             </Button>
           ))}
         </ScrollArea>
-      </div>
+      </div>)}
 
       <div className="flex-1 p-6 overflow-auto">
         <h1 className="text-2xl font-bold mb-4">PDF Upload and Conversion</h1>
