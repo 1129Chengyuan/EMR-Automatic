@@ -1,84 +1,15 @@
-<!DOCTYPE html>
+---
+import PDFUploadWithTemplates from '../srcForDashboard/pdf-upload.tsx'
+---
+
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard</title>
-</head>
-<body>
-  <div class="dashboard-container">
-    <header class="dashboard-header">
-      <h1>Dashboard</h1>
-    </header>
-    <aside class="dashboard-sidebar">
-      <nav>
-        <ul>
-          <li><a href="/dashboard">Home</a></li>
-          <li><a href="/dashboard/profile">Profile</a></li>
-          <li><a href="/dashboard/settings">Settings</a></li>
-          <li><a href="/logout">Logout</a></li>
-        </ul>
-      </nav>
-    </aside>
-    <main class="dashboard-main">
-      <h2>Welcome to the Dashboard</h2>
-      <p>This is your main content area. Customize it as needed.</p>
-    </main>
-  </div>
-</body>
+  <head>
+    <title>Dashboard</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="/src/styles/global.css" rel="stylesheet" />
+  </head>
+  <body class="bg-white font-sans">
+    <PDFUploadWIthTemplates client:load/>
+  </body>
 </html>
-
-<style>
-  .dashboard-container {
-    display: flex;
-    min-height: 100vh;
-    flex-direction: column;
-  }
-
-  .dashboard-header {
-    background-color: #333;
-    color: #fff;
-    padding: 1rem;
-    text-align: center;
-  }
-
-  .dashboard-sidebar {
-    background-color: #f4f4f4;
-    padding: 1rem;
-    width: 200px;
-  }
-
-  .dashboard-sidebar nav ul {
-    list-style: none;
-    padding: 0;
-  }
-
-  .dashboard-sidebar nav ul li {
-    margin: 1rem 0;
-  }
-
-  .dashboard-sidebar nav ul li a {
-    text-decoration: none;
-    color: #333;
-  }
-
-  .dashboard-main {
-    flex: 1;
-    padding: 1rem;
-  }
-
-  @media (min-width: 768px) {
-    .dashboard-container {
-      flex-direction: row;
-    }
-
-    .dashboard-sidebar {
-      height: 100vh;
-      position: fixed;
-    }
-
-    .dashboard-main {
-      margin-left: 200px;
-    }
-  }
-</style>
