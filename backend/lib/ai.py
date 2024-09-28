@@ -62,4 +62,3 @@ def get_plan(inHospital):
     return response.choices[0].message.content
 
 
-def get_compiled():
