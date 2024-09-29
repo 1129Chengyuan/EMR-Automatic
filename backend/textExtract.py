@@ -15,7 +15,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 
 def getText():
-    rel_path = "../input.pdf"
+    rel_path = "./input.pdf"
     script_dir = os.path.dirname(__file__)
     PDF_PATH = os.path.join(script_dir, rel_path)
     reader = PdfReader(PDF_PATH)

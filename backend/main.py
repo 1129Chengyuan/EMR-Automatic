@@ -15,7 +15,7 @@ from fpdf import FPDF
 
 import json
 
-from lib.textExtract import main
+from textExtract import main
 
 app = Flask(__name__)
 CORS(app)
