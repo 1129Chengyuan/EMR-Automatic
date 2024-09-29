@@ -23,7 +23,7 @@ def getText():
     text = text.split("\n")
     text = [i for i in text if "General" in i]
     text = text[0]
-    text = text[11:]
+    text = text[text.lstrip().index(" ")+1:]
     return text
 
 
