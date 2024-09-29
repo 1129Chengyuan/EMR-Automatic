@@ -129,12 +129,35 @@ def create_printable_string(bodyText):
 
     print(bodyText[1])
     # Convert the JSON string in bodyText[1] to a list of medications
-    bodyText[1] = bodyText[1].replace('\n','')
-    medications = json.loads(bodyText[1])
+    s = ""
+    for i in bodyText[1]:
+        if (i != '\n'):
+            s += i
+    bodyText[1] = s
+    print(bodyText[1])
     print("Checkpoint CPS 2")
     printable_string += "Medications:\n"
-    for i, med in enumerate(medications, start=1):
-        printable_string += f"{i}. {med['name']} - {med['dose']}\n"
+    c = ""
+    line = ""
+    counter = 1
+    debug = ""
+    for i in bodyText[1]:
+        if (i == '"' and len(c) == 0):
+            c += "1"
+        elif (i == '"' and len(c) > 0):
+            c = c[1:]
+            if (len(line) == 0):
+                line = f"{counter}. {c} - "
+                counter += 1
+            else:
+                line += c + "\n"
+                debug += line
+                line = ""
+            c = ""
+        elif (len(c) > 0):
+            c += i
+    print(debug)
+    printable_string += debug
 
     print("Checkpoint CPS 3")
     # Add the third part of the bodyText
