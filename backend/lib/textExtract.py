@@ -21,6 +21,10 @@ def getText():
     PDF_PATH = os.path.join(script_dir, rel_path)
     reader = PdfReader(PDF_PATH)
     text = reader.pages[0].extract_text()
+    text = text.split("\n")
+    text = [i for i in text if "General" in i]
+    text = text[0]
+    text = text[11:]
     return text
 
 
@@ -39,3 +43,5 @@ metadata = getMetadata(pdf_text)  # Get the metadata for the extracted text
 
 # Print out the result
 print(metadata)
+
+print(pdf_text)
