@@ -1,8 +1,8 @@
 import os
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 from pypdf import PdfReader
 
-load_dotenv()
+# load_dotenv()
 
 def getText():
     rel_path = "../input.pdf"
