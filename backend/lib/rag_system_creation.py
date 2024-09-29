@@ -6,17 +6,19 @@ from llama_index.llms.openai import OpenAI
 from llama_index.core.settings import Settings
 from datasets import load_dataset
 import json
+import os
+from dotenv import load_dotenv
 import pandas as pd
 from llama_index.core import Document
 # Include this import to avoid MetadataMode error
 from llama_index.core.schema import MetadataMode
 from llama_index.core.node_parser import SentenceSplitter
 from llama_index.vector_stores.mongodb import MongoDBAtlasVectorSearch
-from llama_index.core import VectorStoreIndex, StorageContext
-import pprint
-from llama_index.core.response.notebook_utils import display_response
-
+from llama_index.core import VectorStoreIndex
 # Load dataset from Hugging Face
+
+
+load_dotenv()
 dataset = load_dataset("wasiqnauman/medical-diagnosis-synthetic")
 
 # Convert the dataset to a pandas dataframe
@@ -32,8 +34,10 @@ dataset_df = dataset_df.head(100)
 # print(dataset_df.isnull().sum())
 
 # Initialize the OpenAI embedding model and LLM
+llm = OpenAI(
+    api_key=os.getenv("AI_API_KEY")
+)
 embed_model = OpenAIEmbedding(model="text-embedding-ada-002")
-llm = OpenAI()
 
 # Set up embedding and LLM in the settings
 Settings.llm = llm

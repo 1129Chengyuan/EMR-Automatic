@@ -17,3 +17,4 @@ pymongo==4.9.1
 pypdf==5.0.0
 python-dotenv==1.0.1
 llama-index-vector-stores-mongodb
+matplotlib

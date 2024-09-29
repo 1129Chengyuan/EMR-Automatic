@@ -55,5 +55,5 @@ def main():
 
 # Print out the result
 # print(metadata)
-print(main())
+# print(main())
 # print(pdf_text)
