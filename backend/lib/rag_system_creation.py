@@ -154,8 +154,36 @@ query = {"metadata.input": {
     "$regex": ".*I have a sore throat, mild fever, and feel very tired. My throat hurts when I swallow.*"}}
 
 # Query the collection
-documents = collection.find_one(query)
+documents = collection.find_one(query, {"metadata.output": 1})
 
 # Print the matching documents
 print("Documents found:")
 print(documents)
+
+output = documents["metadata"]["output"]
+
+cleaned_output = output.strip('""').replace("\\n", "\n")
+
+print(cleaned_output)
+
+
+def get_metadata_output(someText):
+    """Query the RAG system and return metadata output for a given input text."""
+    try:
+        # Create a regex-based query for MongoDB
+        query = {"metadata.input": {"$regex": f".*{someText}.*",
+                                    "$options": "i"}}  # Case-insensitive search
+
+        # Query MongoDB collection
+        document = collection.find_one(query, {"metadata.output": 1})
+
+        # If document is found, extract and clean the output
+        if document:
+            output = document["metadata"]["output"]
+            cleaned_output = output.strip('""').replace("\\n", "\n")
+            return cleaned_output
+        else:
+            return "No matching document found in the RAG system."
+
+    except Exception as e:
+        return f"Error occurred while retrieving metadata: {e}"
