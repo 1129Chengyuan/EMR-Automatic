@@ -8,7 +8,7 @@ from werkzeug.utils import secure_filename
 from bson.binary import Binary
 from time import time
 
-from lib.textExtract import displayToPage
+# from lib.textExtract import displayToPage
 
 app = Flask(__name__)
 CORS(app)
@@ -121,6 +121,11 @@ def getpdf():
         return jsonify({"bodytext": bodyText})
     else:
         return jsonify({"bodytext": "Patient not found"})
+
+@app.route("/downloadpdf", methods=['GET'])
+def downloadpdf():
+    f = open("lib/download.pdf", "rb")
+    return f.read()
 
 if __name__ == "__main__":
     app.run()
