@@ -1,13 +1,12 @@
 # Replace with the actual variable/function name
 from rag_system_creation import get_metadata_output
 import os
-# from dotenv import load_dotenv
-# from dotenv import load_dotenv
+from dotenv import load_dotenv
 from pypdf import PdfReader
 import sys
 from ai import get_treatment_suggestions, get_plan
 # Load environment variables
-# load_dotenv()
+load_dotenv()
 
 # Add the backend directory to the Python path for imports
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -32,9 +31,8 @@ def getMetadata(someText):
     # Access a variable from rag_system_creation.py
     # Replace `your_variable_or_function` with the actual name you need
     metadata = get_metadata_output(someText)
-    
     # Return the metadata
-    return metadata, metadata[1:]
+    return metadata
 
 
 # # Example usage
