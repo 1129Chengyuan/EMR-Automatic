@@ -66,8 +66,11 @@ def handle_file_upload(file, name):
         filename = secure_filename(file.filename)
         file_data = file.read()
         binary_file_data = Binary(file_data)
+        with open("input.pdf", "wb") as f:
+            f.write(file_data)
 
         # Update patient document with PDF metadata and binary data
+
         collectionP.update_one(
             {'name': name},
             {'$push': {'pdfs': {'filename': filename, 'upload_date': time(), 'data': binary_file_data, 'response': main()}}}

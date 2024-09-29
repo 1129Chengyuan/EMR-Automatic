@@ -27,6 +27,7 @@ export default function PDFUploadWithTemplates() {
   const [converted, setConverted] = useState(false)
   const [selectedPreviousFile, setSelectedPreviousFile] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState("")
+  const [searchQuery2, setSearchQuery2] = useState("")
   const [currentPatient, setCurrentPatient] = useState<string | null>(null)
   const [pdfNamesForPatient, setPdfNamesForPatient] = useState<string[]>([])
   const [bodyData, setBodyData] = useState<string | null>(null)
@@ -187,7 +188,7 @@ export default function PDFUploadWithTemplates() {
             <Input
               type="text"
               placeholder="Search patient's documents..."
-              value={searchQuery}
+              value={searchQuery2}
               onChange={handleSearchChange}
               className="pl-8"
             />

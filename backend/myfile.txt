@@ -1,1 +1,11 @@
-The file was not converted successfully
+ Eczema
+Medical Information: Eczema is a chronic skin condition that causes red, itchy, and inflamed patches of skin. It can be triggered by allergens, stress, and environmental factors.
+Treatment Suggestions: Eczema treatment involves moisturizing the skin regularly, using topical corticosteroids to reduce inflammation, and avoiding triggers such as allergens and stress. In severe cases, oral medications or phototherapy may be recommended.
+
+Medications:
+1. Hydrocortisone cream - Apply a thin layer twice daily as needed
+2. Calcineurin inhibitors (Tacrolimus) - Apply a thin layer twice daily for up to 6 weeks
+3. Antihistamines (Cetirizine) - 10mg once daily for itching relief
+4. Moisturizers (Cetaphil) - Apply liberally multiple times daily
+
+Apply prescribed topical medications, keep skin hydrated with moisturizers, monitor for signs of infection, provide education on trigger avoidance, assess and address any psychological impact, document skin condition and responses to treatment, ensure comfortable clothing and bedding, notify doctor of any worsening symptoms.
