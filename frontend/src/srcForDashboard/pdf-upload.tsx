@@ -89,7 +89,9 @@ export default function PDFUploadWithTemplates() {
       const response = await fetch(url.toString());
       if (response.ok) {
         const data = await response.json();
-        setBodyData(data.bodytext);
+        const output = data.bodytext.replace(/(?:\r\n|\r|\n)/g, '<br>');
+        console.log(output);
+        setBodyData(output);
       } else {
         console.error('Failed to fetch PDF Data:', response.statusText);
         setBodyData("Failed to convert pdf");
@@ -247,11 +249,7 @@ export default function PDFUploadWithTemplates() {
             <Check className="h-5 w-5" />
           </div>
           <h2 className="text-2xl font-bold mb-4">Differential Diagnosis: </h2>
-          <div className="space-y-2">
-            <div>
-              {bodyData}
-            </div>
-          </div>
+          <div className="space-y-50 text-lg leading-loose" dangerouslySetInnerHTML={{ __html: bodyData || '' }}></div>
         </div>        
         )}
       </div>
