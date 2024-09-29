@@ -180,10 +180,10 @@ def get_metadata_output(someText):
         # If document is found, extract and clean the output
         if document:
             output = document["metadata"]["output"]
-            cleaned_output = output.strip('""').replace("\\n", "\n")
+            cleaned_output = str(output).strip('""').replace("\\n", "\n")
             return cleaned_output
         else:
-            return "No matching document found in the RAG system."
+            return str("No matching document found in the RAG system.")
 
     except Exception as e:
-        return f"Error occurred while retrieving metadata: {e}"
+        return str(f"Error occurred while retrieving metadata: {e}")
