@@ -65,6 +65,7 @@ export default function PDFUploadWithTemplates() {
           method: 'POST',
           body: formData,
         });
+        fetchPatientFiles();
     
         const msg = await response.json();
         console.log(msg.message);
@@ -98,8 +99,12 @@ export default function PDFUploadWithTemplates() {
     setCurrentPatient(patientName)
 
     // fetch files for the patient
+    fetchPatientFiles();
+  }
+
+  const fetchPatientFiles = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/getpdfs?name=${patientName}`);
+      const response = await fetch(`http://localhost:5000/getpdfs?name=${currentPatient}`);
       const data = await response.json();
       setPdfNamesForPatient([]);
       if (response.ok) {
