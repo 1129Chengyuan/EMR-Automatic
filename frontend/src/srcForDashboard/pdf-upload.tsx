@@ -78,6 +78,8 @@ export default function PDFUploadWithTemplates() {
         console.log(msg.message);
       }
 
+      await new Promise(resolve => setTimeout(resolve, 5000));
+
       // Send for getPDF function
       const url = new URL('http://localhost:5000/getpdf');
       url.searchParams.append('name', currentPatient);

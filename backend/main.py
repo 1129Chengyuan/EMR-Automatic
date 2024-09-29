@@ -15,6 +15,7 @@ from fpdf import FPDF
 
 import json
 
+import threading
 from textExtract import main
 
 app = Flask(__name__)
@@ -60,25 +61,7 @@ def register():
         collection.insert_one({'username': username, 'npi': npi, 'password': password, 'timecreated': time()})
         return jsonify({"message": "User created successfully"}), 201
 
-@app.route("/uploadpdf", methods=['POST'])
-def uploadpdf():
-    if 'file' not in request.files:
-        return jsonify({"message": "No file part"}), 400
-
-    file = request.files['file']
-    if file.filename == '':
-        return jsonify({"message": "No selected file"}), 400
-
-    """CHANGE THIS NAME THING TO CALL HIS FUNCTION FOR THE NAME"""
-    name = request.form.get('name').lower()
-    if (not name):
-        return jsonify({"message": "No name provided"}), 400
-
-    name = name.lower()
-    # Create a patient if they don't exist
-    if collectionP.find_one({'name': name}) is None:
-        collectionP.insert_one({'name': name, 'pdfs': []})
-
+def handle_file_upload(file, name):
     if file and file.filename.endswith('.pdf'):
         filename = secure_filename(file.filename)
         file_data = file.read()
@@ -87,8 +70,38 @@ def uploadpdf():
         # Update patient document with PDF metadata and binary data
         collectionP.update_one(
             {'name': name},
-            {'$push': {'pdfs': {'filename': filename, 'upload_date': time(), 'data': binary_file_data}}}
+            {'$push': {'pdfs': {'filename': filename, 'upload_date': time(), 'data': binary_file_data, 'response': main()}}}
         )
+        print("File uploaded successfully")
+    else:
+        print("Invalid file type")
+
+@app.route("/uploadpdf", methods=['POST'])
+def uploadpdf():
+    if 'file' not in request.files:
+        return jsonify({"message": "No file part"}), 400
+
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({"message": "No selected file"}), 400
+    
+    # print(file.read())
+
+    """CHANGE THIS NAME THING TO CALL HIS FUNCTION FOR THE NAME"""
+    name = request.form.get('name').lower()
+    if (not name):
+        return jsonify({"message": "No name provided"}), 400
+
+    print("Starting upload:", name, file.filename)
+    name = name.lower()
+    # Create a patient if they don't exist
+    if collectionP.find_one({'name': name}) is None:
+        collectionP.insert_one({'name': name, 'pdfs': []})
+
+    if file and file.filename.endswith('.pdf'):
+        # Update patient document with PDF metadata and binary data
+        thread = threading.Thread(target=handle_file_upload, args=(file, name))
+        thread.start()
         
         return jsonify({"message": "File uploaded successfully"}), 201
     else:
@@ -112,17 +125,23 @@ def create_printable_string(bodyText):
 
     # Add the first part of the bodyText
     printable_string += bodyText[0] + "\n\n"
+    print("Checkpoint CPS 1")
 
+    print(bodyText[1])
     # Convert the JSON string in bodyText[1] to a list of medications
+    bodyText[1] = bodyText[1].replace('\n','')
     medications = json.loads(bodyText[1])
+    print("Checkpoint CPS 2")
     printable_string += "Medications:\n"
     for i, med in enumerate(medications, start=1):
         printable_string += f"{i}. {med['name']} - {med['dose']}\n"
 
+    print("Checkpoint CPS 3")
     # Add the third part of the bodyText
     if (len(bodyText) > 2):
         printable_string += "\n" + bodyText[2]
 
+    print("Checkpoint CPS 4")
     return printable_string
 
 
@@ -183,22 +202,33 @@ def getpdf():
     pdfName = request.args.get('pdfName')
     patient = collectionP.find_one({'name': name})
     bodyText = "The file was not converted successfully"
+    print("Starting find:", name, pdfName)
     if patient is not None:
+        print("Patient exists")
         for pdf in patient['pdfs']:
+            print("Checking pdf", pdf['filename'])
             if pdf['filename'] == pdfName:
 
                 print("Found pdf")
 
                 with open("input.pdf", "wb") as f:
                     f.write(pdf['data'])
-                bodyText = main()
+                # bodyText = main()
                 # bodyText = ['Irritable Bowel Syndrome (IBS)\nMedical Information: IBS is a common disorder affecting the large intestine, causing symptoms like cramping, abdominal pain, bloating, gas, and diarrhea or constipation. The exact cause is unknown, but factors like diet, stress, and gut bacteria play a role.\nTreatment Suggestions: Treatment for IBS focuses on relieving symptoms. Dietary changes like increasing fiber intake or following a low FODMAP diet can help. Medications include antispasmodics, laxatives, o...', '[{"name": "Loperamide", "dose": "2mg"}, {"name": "Dicyclomine", "dose": "20mg"}, {"name": "Amitriptyline", "dose": "10mg"}]', 'Monitor vital signs, administer prescribed medications, provide emotional support, assist with hygiene care, encourage fluid intake, document intake and output, assist with mobility exercises, monitor bowel movements, provide dietary guidance.']
+                bodyText = pdf['response']
+                print("Checkpoint 1")
                 if len(bodyText) >= 2:
+                    print("Checkpoint 2a0")
                     bodyText = create_printable_string(bodyText)
+                    print("Checkpoint 2a1")
                 elif len(bodyText) == 1:
+                    print("Checkpoint 2b0")
                     bodyText = bodyText[0]
+                    print("Checkpoint 2b1")
                 break
+        print("Checkpoint 3")
         create_and_append_pdf(bodyText, "input.pdf", "lib/download.pdf")
+        print("Checkpoint 4")
         return jsonify({"bodytext": bodyText})
     else:
         return jsonify({"bodytext": "Patient not found"})
@@ -213,5 +243,4 @@ def downloadpdf():
     return send_file("lib/download.pdf", as_attachment=True)
 
 if __name__ == "__main__":
-    print("Starting server")
     app.run()
