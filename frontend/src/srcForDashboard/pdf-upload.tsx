@@ -30,7 +30,6 @@ export default function PDFUploadWithTemplates() {
   const [currentPatient, setCurrentPatient] = useState<string | null>(null)
   const [pdfNamesForPatient, setPdfNamesForPatient] = useState<string[]>([])
   const [bodyData, setBodyData] = useState<string | null>(null)
-
   const patientNames = ["john doe", "bob junior", "mira amir", "hunlee li", "sanvi jain", "james bond"].sort()
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,10 +43,18 @@ export default function PDFUploadWithTemplates() {
     }
   }
 
+  const resetInput = () => {
+    const input = document.getElementById("TTTR") as HTMLInputElement
+    const temp = input.value;
+    if (input)
+      input.value = ""
+    input.value = temp;
+  }
+
   const handlePreviousFileSelect = (fileName: string) => {
     setSelectedPreviousFile(fileName)
     setFile(null)
-    
+    resetInput()
   }
 
   const handleUpload = async () => {
@@ -119,6 +126,15 @@ export default function PDFUploadWithTemplates() {
 
   const handleSearchChange = (event: { target: { value: SetStateAction<string> } }) => {
     setSearchQuery(event.target.value)
+  }
+
+  const downloadPDF = async () => {
+    const link = document.createElement('a');
+    link.href = `http://localhost:5000/downloadpdf`;
+    link.download = `${currentPatient}.pdf`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   }
 
   const filteredNames = patientNames.filter(patientN => 
@@ -199,11 +215,18 @@ export default function PDFUploadWithTemplates() {
               accept=".pdf"
               onChange={handleFileChange}
               className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100"
+              id="TTTR"
             />
             <Button onClick={handleUpload} disabled={(!file && !selectedPreviousFile) || !currentPatient || converting}>
               {converting ? "Converting..." : `Upload and Convert ${selectedPreviousFile || ''}`}
               {!converting && <Upload className="ml-2 h-4 w-4" />}
             </Button>
+            
+            {converted && (
+              <Button onClick={downloadPDF}>
+                Download generated PDF: {currentPatient}.pdf
+              </Button>
+            )}
           </div>
         )}
 
