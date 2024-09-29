@@ -1,8 +1,6 @@
 from urllib.parse import quote_plus
 import pymongo
 from pymongo import MongoClient
-import numpy as np
-import openai
 from llama_index.embeddings.openai import OpenAIEmbedding
 from llama_index.llms.openai import OpenAI
 from llama_index.core.settings import Settings
