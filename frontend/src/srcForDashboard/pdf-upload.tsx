@@ -30,7 +30,6 @@ export default function PDFUploadWithTemplates() {
   const [currentPatient, setCurrentPatient] = useState<string | null>(null)
   const [pdfNamesForPatient, setPdfNamesForPatient] = useState<string[]>([])
   const [bodyData, setBodyData] = useState<string | null>(null)
-  const [fileInputRef, setFileInputRef] = useState<string | null>(null)
 
   const patientNames = ["john doe", "bob junior", "mira amir", "hunlee li", "sanvi jain", "james bond"].sort()
 
@@ -58,24 +57,34 @@ export default function PDFUploadWithTemplates() {
     setConversionProgress(0)
   
     try {
-      const formData = new FormData();
-      formData.append('name', currentPatient);
       if (file) {
+        const formData = new FormData();
+        formData.append('name', currentPatient);
         formData.append('file', file);
-      } else {
-        formData.append('DB', "true");
-        formData.append('file', selectedPreviousFile);
+        const response = await fetch('http://localhost:5000/uploadpdf', {
+          method: 'POST',
+          body: formData,
+        });
+    
+        const msg = await response.json();
+        console.log(msg.message);
       }
-  
-      const response = await fetch('http://localhost:5000/uploadpdf', {
-        method: 'POST',
-        body: formData,
-      });
-  
-      const data = await response.json();
-  
+
+      // Send for getPDF function
+      const url = new URL('http://localhost:5000/getpdf');
+      url.searchParams.append('name', currentPatient);
+      if (file) {
+        url.searchParams.append('pdfName', file.name)
+      } else {
+        url.searchParams.append('pdfName', selectedPreviousFile)
+      }
+      const response = await fetch(url.toString());
       if (response.ok) {
+        const data = await response.json();
         setBodyData(data.bodytext);
+      } else {
+        console.error('Failed to fetch PDF Data:', response.statusText);
+        setBodyData("Failed to convert pdf");
       }
     } catch (error) {
       console.error('Error:', error);
