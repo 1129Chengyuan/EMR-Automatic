@@ -216,18 +216,20 @@ export default function PDFUploadWithTemplates() {
 
         {converted && (
           <div className="space-y-4">
-            <div className="flex items-center space-x-2 text-green-600">
-              <FileText className="h-5 w-5" />
-              <span>PDF converted successfully!</span>
-              <Check className="h-5 w-5" />
-            </div>
-            <h2 className="text-2xl font-bold mb-4">Differential Diagnosis:</h2>
-            <div className="space-y-2">
-              <div>
-                {bodyData}
-              </div>
+          <div className="flex items-center space-x-2 text-green-600"> 
+            {/* Added margin-top to lower the text */}
+            <br /> {/* New line added */}
+            <FileText className="h-5 w-5" />
+            <span>PDF converted successfully!</span>
+            <Check className="h-5 w-5" />
+          </div>
+          <h2 className="text-2xl font-bold mb-4">Differential Diagnosis: </h2>
+          <div className="space-y-2">
+            <div>
+              {bodyData}
             </div>
           </div>
+        </div>        
         )}
       </div>
     </div>
