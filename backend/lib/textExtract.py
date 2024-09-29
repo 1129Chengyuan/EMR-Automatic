@@ -5,7 +5,7 @@ import os
 # from dotenv import load_dotenv
 from pypdf import PdfReader
 import sys
-
+from ai import get_treatment_suggestions, get_plan
 # Load environment variables
 # load_dotenv()
 
@@ -32,7 +32,7 @@ def getMetadata(someText):
     # Access a variable from rag_system_creation.py
     # Replace `your_variable_or_function` with the actual name you need
     metadata = get_metadata_output(someText)
-
+    
     # Return the metadata
     return metadata, metadata[1:]
 
@@ -47,7 +47,12 @@ def main():
     physical_examination_results = getText()  # Extract text from the PDF
     # Get the metadata for the extracted text
     metadata = getMetadata(physical_examination_results)
-    return metadata
+    disease = metadata.lstrip()[:metadata.lstrip().index(" ")]
+
+    treatments = get_treatment_suggestions(disease)
+    plan = get_plan(True)
+
+    return [metadata, treatments, plan]
 
 
 # Print out the result
