@@ -30,8 +30,8 @@ dataset_df = dataset_df.dropna(subset=['input'])
 # **LIMIT to the first 20 rows**
 dataset_df = dataset_df.head(100)
 
-print("\nNumber of missing values in each column after removal:")
-print(dataset_df.isnull().sum())
+# print("\nNumber of missing values in each column after removal:")
+# print(dataset_df.isnull().sum())
 
 # Initialize the OpenAI embedding model and LLM
 embed_model = OpenAIEmbedding(model="text-embedding-ada-002")
@@ -108,7 +108,7 @@ for node in nodes:
             print(f"Warning: Content for node {node} is None")
     except Exception as e:
         print(f"Error processing node {node}: {e}")
-print(nodes[0].get_content())
+# print(nodes[0].get_content())
 
 
 def get_mongo_client(mongo_uri):
@@ -142,7 +142,7 @@ vector_store.add(nodes)
 index = VectorStoreIndex.from_vector_store(vector_store)
 
 count = collection.count_documents({})
-print(f"Number of documents in collection: {count}")
+# print(f"Number of documents in collection: {count}")
 
 # print("Nodes added to vector store:")
 # for node in nodes:
@@ -157,14 +157,14 @@ query = {"metadata.input": {
 documents = collection.find_one(query, {"metadata.output": 1})
 
 # Print the matching documents
-print("Documents found:")
-print(documents)
+# print("Documents found:")
+# print(documents)
 
 output = documents["metadata"]["output"]
 
 cleaned_output = output.strip('""').replace("\\n", "\n")
 
-print(cleaned_output)
+# print(cleaned_output)
 
 
 def get_metadata_output(someText):

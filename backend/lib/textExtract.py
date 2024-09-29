@@ -34,14 +34,23 @@ def getMetadata(someText):
     metadata = get_metadata_output(someText)
 
     # Return the metadata
+    return metadata, metadata[1:]
+
+
+# # Example usage
+# physical_examination_results = getText()  # Extract text from the PDF
+# # Get the metadata for the extracted text
+# metadata = getMetadata(physical_examination_results)
+
+
+def main():
+    physical_examination_results = getText()  # Extract text from the PDF
+    # Get the metadata for the extracted text
+    metadata = getMetadata(physical_examination_results)
     return metadata
 
 
-# Example usage
-pdf_text = getText()  # Extract text from the PDF
-metadata = getMetadata(pdf_text)  # Get the metadata for the extracted text
-
 # Print out the result
-print(metadata)
-
-print(pdf_text)
+# print(metadata)
+main()
+# print(pdf_text)
