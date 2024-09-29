@@ -8,6 +8,8 @@ from werkzeug.utils import secure_filename
 from bson.binary import Binary
 from time import time
 
+from lib.textExtract import displayToPage
+
 app = Flask(__name__)
 CORS(app)
 
@@ -93,23 +95,32 @@ def getpdfs():
     if pat is not None:
         for pdf in pat['pdfs']:
             pdfNames.append(pdf['filename'])
-            print(pdfNames)
         return jsonify({"pdfs": pdfNames}), 200
     else:
         return jsonify({"pdfs": pdfNames, "message": "Patient not found"}), 404
 
 @app.route("/getpdf", methods=['GET'])
 def getpdf():
+    
+    print("Find pdf")
+
     name = request.args.get('name')
     pdfName = request.args.get('pdfName')
     patient = collectionP.find_one({'name': name})
+    bodyText = "The file was not converted successfully"
     if patient is not None:
         for pdf in patient['pdfs']:
             if pdf['filename'] == pdfName:
-                return pdf['data']
-        return "PDF not found"
+
+                print("Found pdf")
+
+                with open("lib/" + "temporary.pdf", "wb") as f:
+                    f.write(pdf['data'])
+                bodyText = displayToPage("temporary.pdf")
+                break
+        return jsonify({"bodytext": bodyText})
     else:
-        return "Patient not found"
+        return jsonify({"bodytext": "Patient not found"})
 
 if __name__ == "__main__":
     app.run()

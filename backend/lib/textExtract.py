@@ -2,6 +2,7 @@
 from rag_system_creation import get_metadata_output
 import os
 # from dotenv import load_dotenv
+# from dotenv import load_dotenv
 from pypdf import PdfReader
 import sys
 

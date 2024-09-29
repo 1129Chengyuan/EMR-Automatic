@@ -29,6 +29,7 @@ export default function PDFUploadWithTemplates() {
   const [searchQuery, setSearchQuery] = useState("")
   const [currentPatient, setCurrentPatient] = useState<string | null>(null)
   const [pdfNamesForPatient, setPdfNamesForPatient] = useState<string[]>([])
+  const [bodyData, setBodyData] = useState<string | null>(null)
 
   const patientNames = ["john doe", "bob junior", "mira amir", "hunlee li", "sanvi jain", "james bond"].sort()
 
@@ -46,7 +47,7 @@ export default function PDFUploadWithTemplates() {
   const handlePreviousFileSelect = (fileName: string) => {
     setSelectedPreviousFile(fileName)
     setFile(null)
-    setConverted(false)
+    
   }
 
   const handleUpload = async () => {
@@ -56,24 +57,34 @@ export default function PDFUploadWithTemplates() {
     setConversionProgress(0)
   
     try {
-      const formData = new FormData();
       if (file) {
+        const formData = new FormData();
+        formData.append('name', currentPatient);
         formData.append('file', file);
-      } else {
-        formData.append('file', selectedPreviousFile);
+        const response = await fetch('http://localhost:5000/uploadpdf', {
+          method: 'POST',
+          body: formData,
+        });
+    
+        const msg = await response.json();
+        console.log(msg.message);
       }
-  
-      const response = await fetch('http://localhost:5000/uploadpdf', {
-        method: 'POST',
-        body: formData,
-      });
-  
-      const data = await response.json();
-  
+
+      // Send for getPDF function
+      const url = new URL('http://localhost:5000/getpdf');
+      url.searchParams.append('name', currentPatient);
+      if (file) {
+        url.searchParams.append('pdfName', file.name)
+      } else {
+        url.searchParams.append('pdfName', selectedPreviousFile)
+      }
+      const response = await fetch(url.toString());
       if (response.ok) {
-        if (data.message.includes('successful')) {
-          window.location.href = '/dashboard';
-        }
+        const data = await response.json();
+        setBodyData(data.bodytext);
+      } else {
+        console.error('Failed to fetch PDF Data:', response.statusText);
+        setBodyData("Failed to convert pdf");
       }
     } catch (error) {
       console.error('Error:', error);
@@ -81,9 +92,6 @@ export default function PDFUploadWithTemplates() {
       setConverting(false)
       setConverted(true)
     }
-  }
-  const handleTemplateSelect = (templateId: string) => {
-    window.location.href = `/patient-details?template=${templateId}`
   }
 
   const handlePatientChange = async (patientName: string) => {
@@ -179,7 +187,7 @@ export default function PDFUploadWithTemplates() {
       <div className="flex-1 p-6 overflow-auto">
         <h1 className="text-2xl font-bold mb-4">Upload PDF to Selected Patient</h1>
         
-        {!converted && (
+        {(
           <div className="space-y-4">
             <Input
               type="file"
@@ -187,7 +195,7 @@ export default function PDFUploadWithTemplates() {
               onChange={handleFileChange}
               className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100"
             />
-            <Button onClick={handleUpload} disabled={(!file && !selectedPreviousFile) || !currentPatient || !converting}>
+            <Button onClick={handleUpload} disabled={(!file && !selectedPreviousFile) || !currentPatient || converting}>
               {converting ? "Converting..." : `Upload and Convert ${selectedPreviousFile || ''}`}
               {!converting && <Upload className="ml-2 h-4 w-4" />}
             </Button>
@@ -208,18 +216,10 @@ export default function PDFUploadWithTemplates() {
               <span>PDF converted successfully!</span>
               <Check className="h-5 w-5" />
             </div>
-            
+            <h2 className="text-2xl font-bold mb-4">Differential Diagnosis:</h2>
             <div className="space-y-2">
-              <h2 className="text-lg font-semibold">Select a differential diagnosis template:</h2>
-              <div className="flex flex-wrap gap-2">
-                {templates.map((template) => (
-                  <Button
-                    key={template.id}
-                    onClick={() => handleTemplateSelect(template.id)}
-                  >
-                    {template.name}
-                  </Button>
-                ))}
+              <div>
+                {bodyData}
               </div>
             </div>
           </div>
