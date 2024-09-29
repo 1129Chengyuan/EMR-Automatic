@@ -170,6 +170,7 @@ cleaned_output = output.strip('""').replace("\\n", "\n")
 
 
 def get_metadata_output(someText):
+    someText = someText.strip()
     """Query the RAG system and return metadata output for a given input text."""
     try:
         # Create a regex-based query for MongoDB
