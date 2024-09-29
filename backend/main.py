@@ -213,4 +213,5 @@ def downloadpdf():
     return send_file("lib/download.pdf", as_attachment=True)
 
 if __name__ == "__main__":
+    print("Starting server")
     app.run()
