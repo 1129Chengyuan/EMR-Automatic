@@ -114,7 +114,7 @@ def getpdf():
 
                 print("Found pdf")
 
-                with open("lib/" + "temporary.pdf", "w") as f:
+                with open("lib/" + "temporary.pdf", "wb") as f:
                     f.write(pdf['data'])
                 bodyText = displayToPage("temporary.pdf")
                 break
